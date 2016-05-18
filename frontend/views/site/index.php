@@ -8,7 +8,7 @@ Yii::$app->db->open();
 <div class="site-index">
 
     <div class="jumbotron">
-        <h1>+++!!สวัสดีท่าน!!+++</h1>
+        <h1>+++!!สวัสดี ทุกๆท่าน ด้วยความยินดียิ่ง !!+++</h1>
 
         <p class="lead">You have successfully created your Yii-powered application.</p>
 
