@@ -6,8 +6,8 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Hospname */
 
-$this->title = 'Create Hospname';
-$this->params['breadcrumbs'][] = ['label' => 'Hospnames', 'url' => ['index']];
+$this->title = 'เพิ่มสถานบริการ';
+$this->params['breadcrumbs'][] = ['label' => 'รายชื่อสถานบริการ', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="hospname-create">

@@ -7,7 +7,7 @@ use yii\grid\GridView;
 /* @var $searchModel frontend\models\HospnameSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Hospnames';
+$this->title = 'รายชื่อสถานบริการ';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="hospname-index">
@@ -16,7 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
-        <?= Html::a('Create Hospname', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('เพิ่มสถานบริการ', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,

@@ -10,13 +10,12 @@ use frontend\models\Hospname;
 /**
  * HospnameSearch represents the model behind the search form about `frontend\models\Hospname`.
  */
-class HospnameSearch extends Hospname
-{
+class HospnameSearch extends Hospname {
+
     /**
      * @inheritdoc
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             [['id'], 'integer'],
             [['hospname'], 'safe'],
@@ -26,8 +25,7 @@ class HospnameSearch extends Hospname
     /**
      * @inheritdoc
      */
-    public function scenarios()
-    {
+    public function scenarios() {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
     }
@@ -39,14 +37,17 @@ class HospnameSearch extends Hospname
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
-    {
-        $query = Hospname::find();
+    public function search($params) {
+        $query = Hospname::find()->orderBy(['(id)' => SORT_DESC]);
 
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' =>
+            [
+                'pageSize' => 7,
+            ]
         ]);
 
         $this->load($params);
@@ -66,4 +67,5 @@ class HospnameSearch extends Hospname
 
         return $dataProvider;
     }
+
 }

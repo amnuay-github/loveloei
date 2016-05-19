@@ -1,54 +1,273 @@
 <?php
-
 /* @var $this yii\web\View */
 
-$this->title = 'My Yii Application'; 
+use miloschuman\highcharts\Highcharts;
+//use yii\grid\GridView;
+
+use kartik\grid\GridView;
+use yii\helpers\Html;
+
+$this->registerJsFile('./js/chart_dial.js');
+
+$this->title = 'Love Loei';
 Yii::$app->db->open();
 ?>
+
+
 <div class="site-index">
-
-    <div class="jumbotron">
-        <h1>+++!!สวัสดี ทุกๆท่าน ด้วยความยินดียิ่ง !!+++</h1>
-
-        <p class="lead">You have successfully created your Yii-powered application.</p>
-
-        <p><a class="btn btn-lg btn-success" href="http://www.yiiframework.com">Get started with Yii</a></p>
-    </div>
-
-    <div class="body-content">
-
-        <div class="row">
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/doc/">Yii Documentation &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/forum/">Yii Forum &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/extensions/">Yii Extensions &raquo;</a></p>
-            </div>
+    <div class="row">
+        <div style="display: none">
+            <?php
+            echo Highcharts::widget([
+                'scripts' => [
+                    'highcharts-more',
+                    'modules/exporting',
+                    'highcharts-3d',
+                //'modules/drilldown'
+                ]
+            ]);
+            ?>
         </div>
 
+        <div class="col-md-8">
+            <div id="chart-column">
+            </div>
+
+            <?php
+            $this->registerJs("$(function () { 
+                                    Highcharts.getOptions().colors = Highcharts.map(Highcharts.getOptions().colors, function (color) {
+                                        return {
+                                            radialGradient: {
+                                                cx: 0.5,
+                                                cy: 0.3,
+                                                r: 0.7
+                                            },
+                                            stops: [
+                                            [0, color],
+                                            [1, Highcharts.Color(color).brighten(-0.3).get('rgb')] // darken
+                                            ]
+                                        };
+                                    });
+                                    $('#chart-column').highcharts({
+                                        chart: {
+                                            type: 'column',
+                                            margin: 75,
+                                            options3d: {   
+                                                enabled: true,
+                                                alpha: 10,
+                                                beta: 15,
+                                                depth: 70
+                                            }
+                                        },
+                                        title: {
+                                            text: 'จำนวนประชากร'
+                                        },
+                                        plotOptions: {
+                                            pie: {
+                                                allowPointSelect: true,
+                                                cursor: 'pointer',
+                                                depth: 35,
+                                                dataLabels: {
+                                                    enabled: true,
+                                                    format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                                                    style: {
+                                                        color:'black'                     
+                                                    },
+                                                    connectorColor: 'silver'
+                                                }
+                                            }
+                                        },
+                                        xAxis: {
+                                            type: 'category'
+                                        },
+                                        yAxis: {
+                                            title: {
+                                                text: '<b>คน</b>'
+                                            },
+                                        },
+                                        legend: {
+                                            enabled: true
+                                        },
+                                        plotOptions: {
+                                            series: {
+                                                borderWidth: 0,
+                                                dataLabels: {
+                                                    enabled: true
+                                                }
+                                            }
+                                        },
+                                        series: [
+                                        {
+                                            name: 'ครั้ง',
+                                            colorByPoint: true,
+                                            data:$main
+                                        }
+                                        ],
+                                    });
+                                });");
+            ?>    
+        </div>
+        <!-- end column chart -->
+        <div class="col-md-4">
+            <!--?=
+            GridView::widget([
+                'dataProvider' => $dataProvider,
+                'columns' => [
+                    'subdistname',
+                    'human',
+                // ...
+                ],
+            ])
+            ?-->
+            <?php
+            echo GridView::widget([
+                'dataProvider' => $dataProvider,
+                'panel'=>[''],
+                'columns' => [
+                    [
+                        'class' => 'yii\grid\SerialColumn',
+                        'header' => 'ลำดับ',
+                        'options' => ['width' => '20'],
+                        'contentOptions' => ['class' => 'text-center'],
+                        'headerOptions' => ['class' => 'text-center'],
+                    ],
+                    [
+                        'attribute' => 'subdistname',
+                        'header' => 'ตำบล',
+                        'options' => ['width' => '100'],
+                        'contentOptions' => ['class' => 'text-center'],
+                        'headerOptions' => ['class' => 'text-center'],
+                    ],
+                    [
+                        'attribute' => 'human',
+                        'header' => 'จำนวน',
+                        'options' => ['width' => '100'],
+                        'contentOptions' => ['class' => 'text-center'],
+                        'headerOptions' => ['class' => 'text-center'],
+                    ],
+                ],
+            ]);
+            ?>
+        </div>
     </div>
+
+
+    <div class="col-lg-12">
+        <div class="row">
+            <?php
+            $target = 20;
+            $result = 10;
+
+            $persent = 0.00;
+            if ($target > 0) {
+                $persent = $result / $target * 100;
+                $persent = number_format($persent, 2);
+            }
+            $base = 90;
+            $this->registerJs("
+                        var obj_div=$('#ch1');
+                        gen_dial(obj_div,$base,$persent);
+                    ");
+            ?>
+            <center><h4>ร้อยละ</h4></center>
+            <div id="ch1"></div>
+        </div>
+    </div>
+</div>
+
+
+<div class="col-lg-12">
+    <!-- donut chart -->
+    <div class="panel-body">
+        <div style="display: none">
+            <?php
+            echo Highcharts::widget([
+                'scripts' => [
+                    'highcharts-more', // enables supplementary chart types (gauge, arearange, columnrange, etc.)
+                    'modules/exporting', // adds Exporting button/menu to chart
+                //'themes/grid', // applies global 'grid' theme to all charts
+                //'highcharts-3d'
+                //'modules/drilldown'
+                ]
+            ]);
+            ?>
+        </div>
+        <div id="pie-donut">
+        </div>
+        <?php
+        $title = "จำนวนผู้ป่วยที่อยู่ในเขต";
+        $sql04688 = Yii::$app->db->createCommand("SELECT total FROM pop_loei WHERE hoscode = '04688'")->queryScalar();
+        $sql04689 = Yii::$app->db->createCommand("SELECT total FROM pop_loei WHERE hoscode = '04689'")->queryScalar();
+        $sql04690 = Yii::$app->db->createCommand("SELECT total FROM pop_loei WHERE hoscode = '04690'")->queryScalar();
+        $sql04691 = Yii::$app->db->createCommand("SELECT total FROM pop_loei WHERE hoscode = '04691'")->queryScalar();
+        $sql04692 = Yii::$app->db->createCommand("SELECT total FROM pop_loei WHERE hoscode = '04692'")->queryScalar();
+        $this->registerJs("$(function () {
+                                    $('#pie-donut').highcharts({
+                                        chart: {
+                                            plotBackgroundColor: null,
+                                            plotBorderWidth: null,
+                                            plotShadow: false,
+                                            type: 'pie'
+                                        },
+                                        title: {
+                                            text: '$title'
+                                        },
+                                        tooltip: {
+                                            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                                        },
+                                        plotOptions: {
+                                            pie: {
+                                                allowPointSelect: true,
+                                                cursor: 'pointer',
+                                                depth: 35,
+                                                dataLabels: {
+                                                    enabled: true,
+                                                    format: '<b>{point.name}</b>: {point.percentage:.1f} %',    //  แสดง %
+                                                    style: {
+                                                        color:'black'                     
+                                                    },
+                                                    connectorColor: 'silver'
+                                                },
+                                                startAngle: -90,
+                                                endAngle: 90,
+                                                center: ['50%', '75%']
+                                            }
+                                        },
+                                        /*plotOptions: {
+                                            pie: {
+                                                dataLabels: {
+                                                    allowPointSelect: true,
+                                                    cursor: 'pointer',
+                                                    depth: 35,
+                                                    style: {
+                                                        color:'black',                 
+                                                    },
+                                                    connectorColor: 'silver'
+                                                },
+                                                startAngle: -90,
+                                                endAngle: 90,
+                                                center: ['50%', '75%']
+                                            }
+                                        },*/
+                                        legend: {
+                                            enabled: true
+                                        },
+                                        series: [{
+                                            type: 'pie',
+                                            name: 'ร้อยละ',
+                                            innerSize: '50%',
+                                            data: [
+                                            ['รพสต.ธาตุ',   $sql04688],
+                                            ['รพสต.สงเปือย',   $sql04689],
+                                            ['รพสต.โพน',   $sql04690],
+                                            ['รพสต.ศรีโพนแท่น',   $sql04691],
+                                            ['รพสต.นาป่าหนาด',   $sql04692],
+                                            ]
+                                        }]
+                                    });
+                                });
+                                ");
+        ?>
+    </div>
+    <!-- end donut -->
 </div>
